@@ -48,6 +48,11 @@ button.primary:hover{background:#5279e5}
 .tile-footer{padding:9px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted)}
 .tile-footer label{display:flex;align-items:center;gap:5px;cursor:pointer}
 .tile-footer input{accent-color:var(--accent)}
+.volume-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 9px 10px;font-size:11px;color:var(--muted)}
+.volume-controls input[type="range"]{width:105px;accent-color:var(--accent);cursor:pointer}
+.volume-controls output{min-width:30px;text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
+.global-volume{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.global-volume input[type="range"]{width:min(240px,45vw);accent-color:var(--accent)}
 .solo-btn.active{background:#235e49;border-color:var(--green);color:#8cf0c3}
 .tile:fullscreen{width:100%;height:100%;overflow-y:auto;background:black;display:flex;flex-direction:column;border:0;border-radius:0}
 .tile:fullscreen .player-wrap{flex:1;aspect-ratio:auto;min-height:0}
@@ -88,6 +93,14 @@ select{background:var(--panel2);color:white;border:1px solid var(--border);borde
             <div class="separator"></div>
             <button onclick="syncPositions()">↻ SYNC POSITION</button>
         </div>
+        <div class="global-volume">
+            <strong>MASTER VOLUME</strong>
+            <input id="globalVolume" type="range" min="0" max="100" value="70"
+                oninput="setGlobalVolume(this.value)">
+            <output id="globalVolumeValue">70%</output>
+            <button onclick="setGlobalVolume(0)">0%</button>
+            <button onclick="setGlobalVolume(100)">100%</button>
+        </div>
         <div class="toolbar">
             <span style="font-size:12px;color:#8995a8">GRID:</span>
             <select id="gridSelect" onchange="changeGrid()">
@@ -113,6 +126,7 @@ let playerCounter = 0;
 let youtubeReady = false;
 let soloPlayerId = null;
 let soloPreviousMute = new Map();
+let globalVolume = 70;
 
 const grid = document.getElementById("videoGrid");
 const statusText = document.getElementById("status");
@@ -183,6 +197,12 @@ function createTile(item) {
             <label title="Mute this POV"><input type="checkbox" checked onchange="setMute(${item.id},this.checked)"> Mute</label>
             <button class="solo-btn" id="solo-${item.id}" onclick="soloAudio(${item.id})">SOLO</button>
             <span id="state-${item.id}">Loading...</span>
+        </div>
+        <div class="volume-controls">
+            <label for="volume-${item.id}">Volume</label>
+            <input id="volume-${item.id}" type="range" min="0" max="100" value="${globalVolume}"
+                oninput="setPlayerVolume(${item.id},this.value)">
+            <output id="volume-value-${item.id}">${globalVolume}%</output>
         </div>`;
     grid.appendChild(tile);
 }
@@ -195,6 +215,8 @@ function createPlayer(item) {
         events:{
             onReady:function(event) {
                 item.ready = true;
+                item.volume = globalVolume;
+                event.target.setVolume(globalVolume);
                 event.target.mute();
                 const state = document.getElementById("state-"+item.id);
                 if (state) state.textContent = "Ready";
@@ -217,6 +239,32 @@ function createPlayer(item) {
 }
 
 function findPlayer(id) { return players.find(p => p.id === id); }
+
+function setPlayerVolume(id, value) {
+    const item = findPlayer(id);
+    if (!item) return;
+    const volume = Math.max(0, Math.min(100, Number(value) || 0));
+    item.volume = volume;
+
+    if (item.ready) item.player.setVolume(volume);
+
+    const slider = document.getElementById("volume-"+id);
+    const output = document.getElementById("volume-value-"+id);
+    if (slider && Number(slider.value) !== volume) slider.value = volume;
+    if (output) output.textContent = volume + "%";
+}
+
+function setGlobalVolume(value) {
+    globalVolume = Math.max(0, Math.min(100, Number(value) || 0));
+
+    const slider = document.getElementById("globalVolume");
+    const output = document.getElementById("globalVolumeValue");
+    if (slider) slider.value = globalVolume;
+    if (output) output.textContent = globalVolume + "%";
+
+    // Master volume updates every POV without changing its mute/solo state.
+    players.forEach(item => setPlayerVolume(item.id, globalVolume));
+}
 
 function toggleIndividual(id) {
     const item = findPlayer(id);
