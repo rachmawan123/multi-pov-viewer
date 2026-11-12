@@ -1,7 +1,7 @@
 # multi-pov-viewer
 Multi YouTube POV Viewer
 
-# Multi POV Viewer [**Open Multi POV Viewer**](https://rachmawan123.github.io/multi-pov-viewer/)
+# [**Multi POV Viewer**](https://rachmawan123.github.io/multi-pov-viewer/)
 
 A lightweight multi-screen YouTube viewer designed for watching multiple player perspectives simultaneously.
 
