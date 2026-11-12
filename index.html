@@ -1,443 +1,121 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Multi POV Viewer</title>
-
 <style>
 :root {
-    --bg: #090b10;
-    --panel: #121722;
-    --panel2: #1a2230;
-    --border: #293345;
-    --text: #e8edf6;
-    --muted: #8995a8;
-    --accent: #668cff;
-    --green: #35c98a;
-    --red: #f16b75;
+    --bg:#090b10; --panel:#121722; --panel2:#1a2230;
+    --border:#293345; --text:#e8edf6; --muted:#8995a8;
+    --accent:#668cff; --green:#35c98a; --red:#f16b75;
 }
-
-* { box-sizing: border-box; }
-
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Inter, Segoe UI, Arial, sans-serif;
-}
-
-button, textarea, input {
-    font: inherit;
-}
-
-button {
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--panel2);
-    color: var(--text);
-    padding: 9px 13px;
-    border-radius: 7px;
-    transition: .15s;
-}
-
-button:hover {
-    border-color: var(--accent);
-    background: #26334a;
-}
-
-button:active { transform: scale(.97); }
-
-.topbar {
-    padding: 14px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-    background: #10141d;
-    flex-wrap: wrap;
-}
-
-.logo {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: .5px;
-}
-
-.logo span { color: var(--accent); }
-
-.status {
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.container {
-    padding: 15px;
-    max-width: 2200px;
-    margin: auto;
-}
-
-.panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 14px;
-}
-
-.panel-title {
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: #cbd5e5;
-}
-
-.url-area {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-textarea {
-    background: #090e17;
-    border: 1px solid var(--border);
-    color: white;
-    border-radius: 7px;
-    padding: 12px;
-    resize: vertical;
-    flex: 1;
-    min-width: 240px;
-    min-height: 75px;
-    outline: none;
-}
-
-textarea:focus { border-color: var(--accent); }
-
-.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-    font-weight: 700;
-}
-
-.primary:hover { background: #5279e5; }
-
-.toolbar {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.toolbar .separator {
-    width: 1px;
-    height: 27px;
-    background: var(--border);
-    margin: 0 3px;
-}
-
-.green { color: var(--green); }
-.red { color: var(--red); }
-
-.key {
-    display: inline-block;
-    background: #273249;
-    border: 1px solid #3a4861;
-    padding: 2px 7px;
-    border-radius: 5px;
-    font-weight: 700;
-    font-size: 12px;
-}
-
-.grid-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 15px 2px 10px;
-    color: var(--muted);
-    font-size: 12px;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-}
-
-.grid[data-cols="1"] { grid-template-columns: 1fr; }
-.grid[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid[data-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid[data-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-.tile {
-    background: #101722;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    overflow: hidden;
-    min-width: 0;
-}
-
-.tile-header {
-    min-height: 40px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    background: #171f2d;
-    border-bottom: 1px solid var(--border);
-}
-
-.tile-name {
-    font-size: 12px;
-    font-weight: 700;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.tile-actions {
-    display: flex;
-    gap: 5px;
-    flex-shrink: 0;
-}
-
-.tile-actions button {
-    padding: 5px 8px;
-    font-size: 11px;
-}
-
-.player-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: black;
-}
-
-.player-wrap iframe {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    inset: 0;
-}
-
-.tile-footer {
-    padding: 9px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    font-size: 11px;
-    color: var(--muted);
-}
-
-.tile-footer label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.tile-footer input { accent-color: var(--accent); }
-
-.solo-btn.active {
-    background: #235e49;
-    border-color: var(--green);
-    color: #8cf0c3;
-}
-
-.tile.fullscreen-tile {
-    border: 0;
-    border-radius: 0;
-    background: black;
-}
-
-.tile:fullscreen {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    background: black;
-    display: flex;
-    flex-direction: column;
-}
-
-.tile:fullscreen .player-wrap {
-    flex: 1;
-    aspect-ratio: auto;
-    min-height: 0;
-}
-
-.tile:fullscreen .player-wrap iframe {
-    width: 100%;
-    height: 100%;
-}
-
-.tile:fullscreen .tile-header,
-.tile:fullscreen .tile-footer {
-    flex-shrink: 0;
-}
-
-.empty {
-    text-align: center;
-    padding: 55px 15px;
-    color: var(--muted);
-    border: 1px dashed var(--border);
-    border-radius: 10px;
-    line-height: 2;
-}
-
-.hint {
-    color: var(--muted);
-    font-size: 11px;
-    line-height: 1.7;
-    margin-top: 10px;
-}
-
-select {
-    background: var(--panel2);
-    color: white;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 8px;
-}
-
-@media(max-width: 900px) {
-    .grid[data-cols="3"],
-    .grid[data-cols="4"] {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media(max-width: 550px) {
-    .grid,
-    .grid[data-cols="2"],
-    .grid[data-cols="3"],
-    .grid[data-cols="4"] {
-        grid-template-columns: 1fr;
-    }
-
-    .container { padding: 8px; }
-    .topbar { padding: 12px; }
-}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,textarea,input,select{font:inherit}
+button{cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:7px;transition:.15s}
+button:hover{border-color:var(--accent);background:#26334a}
+button:active{transform:scale(.97)}
+.topbar{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:#10141d;flex-wrap:wrap}
+.logo{font-size:18px;font-weight:800;letter-spacing:.5px}
+.logo span{color:var(--accent)}
+.status{font-size:12px;color:var(--muted)}
+.container{padding:15px;max-width:2200px;margin:auto}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.panel-title{font-size:13px;font-weight:700;margin-bottom:10px;color:#cbd5e5}
+.url-area{display:flex;gap:10px;flex-wrap:wrap}
+textarea{background:#090e17;border:1px solid var(--border);color:white;border-radius:7px;padding:12px;resize:vertical;flex:1;min-width:240px;min-height:75px;outline:none}
+textarea:focus{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:700}
+button.primary:hover{background:#5279e5}
+.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toolbar .separator{width:1px;height:27px;background:var(--border);margin:0 3px}
+.green{color:var(--green)}
+.grid-info{display:flex;justify-content:space-between;align-items:center;margin:15px 2px 10px;color:var(--muted);font-size:12px;gap:10px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid[data-cols="1"]{grid-template-columns:1fr}
+.grid[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid[data-cols="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile{background:#101722;border:1px solid var(--border);border-radius:9px;overflow:hidden;min-width:0}
+.tile-header{min-height:40px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;background:#171f2d;border-bottom:1px solid var(--border)}
+.tile-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile-actions{display:flex;gap:5px;flex-shrink:0}
+.tile-actions button{padding:5px 8px;font-size:11px}
+.player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:black}
+.player-wrap iframe{width:100%;height:100%;position:absolute;inset:0}
+.tile-footer{padding:9px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted)}
+.tile-footer label{display:flex;align-items:center;gap:5px;cursor:pointer}
+.tile-footer input{accent-color:var(--accent)}
+.solo-btn.active{background:#235e49;border-color:var(--green);color:#8cf0c3}
+.tile:fullscreen{width:100%;height:100%;overflow-y:auto;background:black;display:flex;flex-direction:column;border:0;border-radius:0}
+.tile:fullscreen .player-wrap{flex:1;aspect-ratio:auto;min-height:0}
+.tile:fullscreen .player-wrap iframe{width:100%;height:100%}
+.tile:fullscreen .tile-header,.tile:fullscreen .tile-footer{flex-shrink:0}
+.empty{text-align:center;padding:55px 15px;color:var(--muted);border:1px dashed var(--border);border-radius:10px;line-height:2}
+.hint{color:var(--muted);font-size:11px;line-height:1.7;margin-top:10px}
+select{background:var(--panel2);color:white;border:1px solid var(--border);border-radius:7px;padding:8px}
+.key{display:inline-block;background:#273249;border:1px solid #3a4861;padding:2px 7px;border-radius:5px;font-weight:700;font-size:12px}
+@media(max-width:900px){.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:550px){.grid,.grid[data-cols="2"],.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:1fr}.container{padding:8px}.topbar{padding:12px}}
 </style>
 </head>
-
 <body>
-
 <header class="topbar">
     <div class="logo">MULTI <span>POV</span> VIEWER</div>
-    <div class="status" id="status">Waiting for YouTube API...</div>
+    <div class="status" id="status">Loading YouTube API...</div>
 </header>
-
 <main class="container">
-
     <section class="panel">
         <div class="panel-title">ADD YOUTUBE VIDEOS</div>
-
         <div class="url-area">
-            <textarea id="urlInput"
-                placeholder="Paste YouTube URLs here (one URL per line)...
-
-https://www.youtube.com/watch?v=VIDEO_ID
-https://youtu.be/VIDEO_ID
-https://www.youtube.com/live/VIDEO_ID"></textarea>
-
-            <button class="primary" onclick="addVideos()">
-                + ADD VIDEOS
-            </button>
+            <textarea id="urlInput" placeholder="Paste YouTube URLs here (one URL per line)...&#10;&#10;https://www.youtube.com/watch?v=VIDEO_ID&#10;https://youtu.be/VIDEO_ID&#10;https://www.youtube.com/live/VIDEO_ID"></textarea>
+            <button class="primary" onclick="addVideos()">+ ADD VIDEOS</button>
         </div>
-
-        <div class="hint">
-            You can paste 4, 8, 10 or more YouTube links at once.
-            Supports regular videos, Shorts and YouTube Live where embedding is allowed.
-        </div>
+        <div class="hint">Paste 4, 8, 10 or more YouTube links at once. Supports regular videos, Shorts and YouTube Live where embedding is allowed.</div>
     </section>
 
     <section class="panel">
         <div class="panel-title">GLOBAL CONTROLS</div>
-
         <div class="toolbar">
-            <button class="primary" onclick="toggleSync()">
-                <span class="key">SPACE</span> PLAY / PAUSE SYNC
-            </button>
-
+            <button class="primary" onclick="toggleSync()"><span class="key">SPACE</span> PLAY / PAUSE SYNC</button>
             <button onclick="playAll()">▶ PLAY ALL</button>
             <button onclick="pauseAll()">Ⅱ PAUSE ALL</button>
-
             <div class="separator"></div>
-
             <button onclick="muteAll()">🔇 MUTE ALL</button>
             <button onclick="unmuteAll()">🔊 UNMUTE ALL</button>
-
             <div class="separator"></div>
-
             <button onclick="syncPositions()">↻ SYNC POSITION</button>
         </div>
-
         <div class="toolbar">
             <span style="font-size:12px;color:#8995a8">GRID:</span>
-
             <select id="gridSelect" onchange="changeGrid()">
-                <option value="auto">Auto</option>
-                <option value="1">1 Column</option>
-                <option value="2" selected>2 Columns</option>
-                <option value="3">3 Columns</option>
+                <option value="auto">Auto</option><option value="1">1 Column</option>
+                <option value="2" selected>2 Columns</option><option value="3">3 Columns</option>
                 <option value="4">4 Columns</option>
             </select>
-
-            <button onclick="toggleBrowserFullscreen()">
-                ⛶ APP FULLSCREEN
-            </button>
-
-            <button onclick="clearAll()" style="color:#f16b75">
-                ✕ CLEAR ALL
-            </button>
+            <button onclick="toggleBrowserFullscreen()">⛶ APP FULLSCREEN</button>
+            <button onclick="clearAll()" style="color:#f16b75">✕ CLEAR ALL</button>
         </div>
-
-        <div class="hint">
-            <span class="key">SPACE</span> Play/Pause all videos with Follow Space enabled.
-            <br>
-            <span class="key">F11</span> Browser fullscreen.
-            <br>
-            <span class="key">ESC</span> Exit individual fullscreen.
-        </div>
+        <div class="hint"><span class="key">SPACE</span> Play/Pause videos with Follow Space enabled. <span class="key">F11</span> Browser fullscreen. <span class="key">ESC</span> Exit individual fullscreen.</div>
     </section>
 
-    <div class="grid-info">
-        <span id="videoCount">0 VIDEOS</span>
-        <span>Each POV has independent controls</span>
-    </div>
-
+    <div class="grid-info"><span id="videoCount">0 VIDEOS</span><span>Each POV has independent controls</span></div>
     <section id="videoGrid" class="grid" data-cols="2">
-        <div class="empty" id="empty">
-            <div style="font-size:32px">▦</div>
-            <b>NO VIDEOS ADDED</b>
-            <br>
-            Paste your YouTube POV links above to get started.
-        </div>
+        <div class="empty" id="empty"><div style="font-size:32px">▦</div><b>NO VIDEOS ADDED</b><br>Paste your YouTube POV links above to get started.</div>
     </section>
-
 </main>
 
 <script>
-/* =========================================
-   MULTI POV VIEWER ENGINE
-========================================= */
-
 let players = [];
 let playerCounter = 0;
 let youtubeReady = false;
 let soloPlayerId = null;
+let soloPreviousMute = new Map();
 
 const grid = document.getElementById("videoGrid");
 const statusText = document.getElementById("status");
-
-/* Load YouTube IFrame API */
 
 const apiScript = document.createElement("script");
 apiScript.src = "https://www.youtube.com/iframe_api";
@@ -447,479 +125,270 @@ window.onYouTubeIframeAPIReady = function() {
     youtubeReady = true;
     statusText.textContent = "YouTube API Ready";
     statusText.className = "status green";
-
     players.forEach(item => createPlayer(item));
 };
 
-/* Extract video ID */
-
 function extractVideoId(url) {
     url = url.trim();
-
-    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
-        return url;
-    }
-
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
     try {
         const parsed = new URL(url);
         const host = parsed.hostname.replace(/^www\./, "");
-
-        if (host === "youtu.be") {
-            return parsed.pathname.split("/").filter(Boolean)[0];
-        }
-
+        if (host === "youtu.be") return parsed.pathname.split("/").filter(Boolean)[0] || null;
         if (host.endsWith("youtube.com")) {
             const params = parsed.searchParams;
-
             if (params.get("v")) return params.get("v");
-
             const parts = parsed.pathname.split("/").filter(Boolean);
-
-            if (["embed", "shorts", "live", "v"].includes(parts[0])) {
-                return parts[1];
-            }
+            if (["embed","shorts","live","v"].includes(parts[0])) return parts[1] || null;
         }
     } catch(e) {}
-
     return null;
 }
-
-/* Add multiple videos */
 
 function addVideos() {
     const input = document.getElementById("urlInput");
     const lines = input.value.split(/\n|,/).map(x => x.trim()).filter(Boolean);
-
-    if (!lines.length) {
-        alert("Please paste at least one YouTube URL.");
-        return;
-    }
-
+    if (!lines.length) return alert("Please paste at least one YouTube URL.");
     let added = 0;
-
     lines.forEach(url => {
         const videoId = extractVideoId(url);
-
-        if (!videoId) {
-            console.warn("Invalid YouTube URL:", url);
-            return;
-        }
-
-        const item = {
-            id: ++playerCounter,
-            videoId,
-            name: "POV " + playerCounter,
-            player: null,
-            sync: true,
-            state: -1,
-            ready: false
-        };
-
+        if (!videoId) { console.warn("Invalid YouTube URL:", url); return; }
+        const item = {id:++playerCounter,videoId,name:"POV "+playerCounter,player:null,sync:true,state:-1,ready:false};
         players.push(item);
         createTile(item);
-
         if (youtubeReady) createPlayer(item);
-
         added++;
     });
-
     input.value = "";
     updateCount();
-
-    if (!added) {
-        alert("No valid YouTube video links found.");
-    }
+    if (!added) alert("No valid YouTube video links found.");
 }
-
-/* Create video tile */
 
 function createTile(item) {
     const tile = document.createElement("div");
     tile.className = "tile";
-    tile.id = "tile-" + item.id;
-
+    tile.id = "tile-"+item.id;
     tile.innerHTML = `
         <div class="tile-header">
-            <div class="tile-name">
-                <span contenteditable="true"
-                    spellcheck="false"
-                    onblur="renamePlayer(${item.id}, this.textContent)"
-                    title="Click to rename">${item.name}</span>
-            </div>
-
+            <div class="tile-name"><span contenteditable="true" spellcheck="false" onblur="renamePlayer(${item.id},this.textContent)" title="Click to rename">${item.name}</span></div>
             <div class="tile-actions">
-                <button onclick="toggleIndividual(${item.id})"
-                    title="Play/Pause">▶ / Ⅱ</button>
-
-                <button onclick="fullscreenTile(${item.id})"
-                    title="Fullscreen">⛶</button>
-
-                <button onclick="removePlayer(${item.id})"
-                    title="Remove" style="color:#f16b75">✕</button>
+                <button onclick="toggleIndividual(${item.id})" title="Play/Pause">▶ / Ⅱ</button>
+                <button onclick="fullscreenTile(${item.id})" title="Fullscreen">⛶</button>
+                <button onclick="removePlayer(${item.id})" title="Remove" style="color:#f16b75">✕</button>
             </div>
         </div>
-
-        <div class="player-wrap">
-            <div id="yt-player-${item.id}"></div>
-        </div>
-
+        <div class="player-wrap"><div id="yt-player-${item.id}"></div></div>
         <div class="tile-footer">
-            <label title="Include this video in Space sync">
-                <input type="checkbox" checked
-                    onchange="setSync(${item.id}, this.checked)">
-                Follow Space
-            </label>
-
-            <label title="Mute this POV">
-                <input type="checkbox" checked
-                    onchange="setMute(${item.id}, this.checked)">
-                Mute
-            </label>
-
-            <button class="solo-btn"
-                id="solo-${item.id}"
-                onclick="soloAudio(${item.id})">SOLO</button>
-
+            <label title="Include this video in Space sync"><input type="checkbox" checked onchange="setSync(${item.id},this.checked)"> Follow Space</label>
+            <label title="Mute this POV"><input type="checkbox" checked onchange="setMute(${item.id},this.checked)"> Mute</label>
+            <button class="solo-btn" id="solo-${item.id}" onclick="soloAudio(${item.id})">SOLO</button>
             <span id="state-${item.id}">Loading...</span>
-        </div>
-    `;
-
+        </div>`;
     grid.appendChild(tile);
 }
 
-/* Create YouTube player */
-
 function createPlayer(item) {
     if (item.player) return;
-
-    item.player = new YT.Player("yt-player-" + item.id, {
-        videoId: item.videoId,
-
-        playerVars: {
-            autoplay: 0,
-            controls: 1,
-            playsinline: 1,
-            rel: 0,
-            enablejsapi: 1,
-            origin: location.origin
-        },
-
-        events: {
-            onReady: function(event) {
+    item.player = new YT.Player("yt-player-"+item.id, {
+        videoId:item.videoId,
+        playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,enablejsapi:1,origin:location.origin},
+        events:{
+            onReady:function(event) {
                 item.ready = true;
                 event.target.mute();
-
-                const state = document.getElementById("state-" + item.id);
+                const state = document.getElementById("state-"+item.id);
                 if (state) state.textContent = "Ready";
             },
-
-            onStateChange: function(event) {
+            onStateChange:function(event) {
                 item.state = event.data;
-
-                const state = document.getElementById("state-" + item.id);
-
-                if (state) {
-                    if (event.data === YT.PlayerState.PLAYING) {
-                        state.textContent = "● PLAYING";
-                        state.style.color = "#35c98a";
-                    } else if (event.data === YT.PlayerState.PAUSED) {
-                        state.textContent = "Ⅱ PAUSED";
-                        state.style.color = "#f0bd62";
-                    } else if (event.data === YT.PlayerState.ENDED) {
-                        state.textContent = "ENDED";
-                        state.style.color = "#8995a8";
-                    } else {
-                        state.textContent = "READY";
-                        state.style.color = "#8995a8";
-                    }
-                }
+                const state = document.getElementById("state-"+item.id);
+                if (!state) return;
+                if (event.data === YT.PlayerState.PLAYING) {state.textContent="● PLAYING";state.style.color="#35c98a";}
+                else if (event.data === YT.PlayerState.PAUSED) {state.textContent="Ⅱ PAUSED";state.style.color="#f0bd62";}
+                else if (event.data === YT.PlayerState.ENDED) {state.textContent="ENDED";state.style.color="#8995a8";}
+                else {state.textContent="READY";state.style.color="#8995a8";}
             },
-
-            onError: function(event) {
-                const state = document.getElementById("state-" + item.id);
-                if (state) {
-                    state.textContent = "Unavailable / Embed blocked";
-                    state.style.color = "#f16b75";
-                }
+            onError:function() {
+                const state = document.getElementById("state-"+item.id);
+                if (state) {state.textContent="Unavailable / Embed blocked";state.style.color="#f16b75";}
             }
         }
     });
 }
 
-/* Individual controls */
-
-function findPlayer(id) {
-    return players.find(p => p.id === id);
-}
+function findPlayer(id) { return players.find(p => p.id === id); }
 
 function toggleIndividual(id) {
     const item = findPlayer(id);
     if (!item || !item.ready) return;
+    if (item.state === YT.PlayerState.PLAYING) item.player.pauseVideo();
+    else item.player.playVideo();
+}
 
-    if (item.state === YT.PlayerState.PLAYING) {
-        item.player.pauseVideo();
-    } else {
-        item.player.playVideo();
+function setSync(id,value) {
+    const item=findPlayer(id);
+    if(item)item.sync=value;
+}
+
+function setMute(id,muted) {
+    const item=findPlayer(id);
+    if(!item || !item.ready)return;
+    item.player[muted ? "mute" : "unMute"]();
+
+    // A manual mute change exits SOLO so the user's new audio choice is respected.
+    if(soloPlayerId !== null) {
+        soloPlayerId=null;
+        soloPreviousMute.clear();
+        updateSoloButtons();
     }
 }
 
-function setSync(id, value) {
-    const item = findPlayer(id);
-    if (item) item.sync = value;
-}
-
-function setMute(id, muted) {
-    const item = findPlayer(id);
-    if (!item || !item.ready) return;
-
-    if (muted) {
-        item.player.mute();
-
-        if (soloPlayerId === id) {
-            soloPlayerId = null;
-            updateSoloButtons();
-        }
-    } else {
-        item.player.unMute();
-    }
-}
-
-/* Space sync */
-
-function getSyncPlayers() {
-    return players.filter(p => p.sync && p.ready);
-}
+function getSyncPlayers() { return players.filter(p=>p.sync && p.ready); }
 
 function toggleSync() {
-    const list = getSyncPlayers();
-
-    if (!list.length) return;
-
-    const somethingPlaying = list.some(
-        p => p.state === YT.PlayerState.PLAYING
-    );
-
-    if (somethingPlaying) {
-        list.forEach(p => p.player.pauseVideo());
-    } else {
-        list.forEach(p => p.player.playVideo());
-    }
+    const list=getSyncPlayers();
+    if(!list.length)return;
+    const somethingPlaying=list.some(p=>p.state===YT.PlayerState.PLAYING);
+    list.forEach(p=>p.player[somethingPlaying ? "pauseVideo" : "playVideo"]());
 }
 
-function playAll() {
-    players.filter(p => p.ready)
-        .forEach(p => p.player.playVideo());
-}
-
-function pauseAll() {
-    players.filter(p => p.ready)
-        .forEach(p => p.player.pauseVideo());
-}
-
-/* Audio controls */
+function playAll() { players.filter(p=>p.ready).forEach(p=>p.player.playVideo()); }
+function pauseAll() { players.filter(p=>p.ready).forEach(p=>p.player.pauseVideo()); }
 
 function muteAll() {
-    soloPlayerId = null;
-
-    players.filter(p => p.ready).forEach(p => {
+    soloPlayerId=null;
+    soloPreviousMute.clear();
+    players.filter(p=>p.ready).forEach(p=>{
         p.player.mute();
-
-        const checkbox = document.querySelector(
-            `#tile-${p.id} .tile-footer label:nth-child(2) input`
-        );
-
-        if (checkbox) checkbox.checked = true;
+        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
+        if(checkbox)checkbox.checked=true;
     });
-
     updateSoloButtons();
 }
 
 function unmuteAll() {
-    soloPlayerId = null;
-
-    players.filter(p => p.ready).forEach(p => {
+    soloPlayerId=null;
+    soloPreviousMute.clear();
+    players.filter(p=>p.ready).forEach(p=>{
         p.player.unMute();
-
-        const checkbox = document.querySelector(
-            `#tile-${p.id} .tile-footer label:nth-child(2) input`
-        );
-
-        if (checkbox) checkbox.checked = false;
+        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
+        if(checkbox)checkbox.checked=false;
     });
-
     updateSoloButtons();
 }
 
-/* Solo audio: unmute one, mute all others */
-
+/* SOLO TOGGLE FIX:
+   First click saves every POV's previous mute state.
+   Clicking the active SOLO again restores those states.
+   Switching to another SOLO keeps the original snapshot. */
 function soloAudio(id) {
-    const selected = findPlayer(id);
+    const selected=findPlayer(id);
+    if(!selected || !selected.ready)return;
 
-    if (!selected || !selected.ready) return;
+    if(soloPlayerId===id) {
+        players.filter(p=>p.ready).forEach(p=>{
+            const wasMuted=soloPreviousMute.has(p.id) ? soloPreviousMute.get(p.id) : true;
+            if(wasMuted)p.player.mute();
+            else p.player.unMute();
 
-    soloPlayerId = id;
+            const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
+            if(checkbox)checkbox.checked=wasMuted;
+        });
+        soloPlayerId=null;
+        soloPreviousMute.clear();
+        updateSoloButtons();
+        return;
+    }
 
-    players.filter(p => p.ready).forEach(p => {
-        if (p.id === id) {
-            p.player.unMute();
+    if(soloPlayerId===null) {
+        soloPreviousMute.clear();
+        players.filter(p=>p.ready).forEach(p=>soloPreviousMute.set(p.id,p.player.isMuted()));
+    }
 
-            const checkbox = document.querySelector(
-                `#tile-${p.id} .tile-footer label:nth-child(2) input`
-            );
+    soloPlayerId=id;
+    players.filter(p=>p.ready).forEach(p=>{
+        const muted=p.id!==id;
+        if(muted)p.player.mute();
+        else p.player.unMute();
 
-            if (checkbox) checkbox.checked = false;
-
-        } else {
-            p.player.mute();
-
-            const checkbox = document.querySelector(
-                `#tile-${p.id} .tile-footer label:nth-child(2) input`
-            );
-
-            if (checkbox) checkbox.checked = true;
-        }
+        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
+        if(checkbox)checkbox.checked=muted;
     });
-
     updateSoloButtons();
 }
 
 function updateSoloButtons() {
-    players.forEach(p => {
-        const button = document.getElementById("solo-" + p.id);
-        if (!button) return;
-
-        button.classList.toggle("active", soloPlayerId === p.id);
-        button.textContent = soloPlayerId === p.id ? "● SOLO ON" : "SOLO";
+    players.forEach(p=>{
+        const button=document.getElementById("solo-"+p.id);
+        if(!button)return;
+        button.classList.toggle("active",soloPlayerId===p.id);
+        button.textContent=soloPlayerId===p.id ? "● SOLO ON" : "SOLO";
     });
 }
-
-/* Sync video positions */
 
 function syncPositions() {
-    const list = players.filter(p =>
-        p.ready && p.state !== YT.PlayerState.UNSTARTED
-    );
-
-    if (list.length < 2) {
-        alert("You need at least two initialized videos.");
-        return;
-    }
-
-    const reference = list[0].player.getCurrentTime();
-
-    list.forEach(p => {
-        p.player.seekTo(reference, true);
-    });
-
-    statusText.textContent =
-        "Positions aligned to " + reference.toFixed(1) + " seconds";
+    const list=players.filter(p=>p.ready && p.state!==YT.PlayerState.UNSTARTED);
+    if(list.length<2)return alert("You need at least two initialized videos.");
+    const reference=list[0].player.getCurrentTime();
+    list.forEach(p=>p.player.seekTo(reference,true));
+    statusText.textContent="Positions aligned to "+reference.toFixed(1)+" seconds";
 }
-
-/* Fullscreen */
 
 function fullscreenTile(id) {
-    const tile = document.getElementById("tile-" + id);
-    if (!tile) return;
-
-    if (tile.requestFullscreen) {
-        tile.requestFullscreen();
-    }
+    const tile=document.getElementById("tile-"+id);
+    if(tile && tile.requestFullscreen)tile.requestFullscreen();
 }
-
 function toggleBrowserFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen?.();
-    } else {
-        document.exitFullscreen?.();
-    }
+    if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
 }
-
-/* Rename video */
-
-function renamePlayer(id, name) {
-    const item = findPlayer(id);
-    if (item && name.trim()) {
-        item.name = name.trim();
-    }
+function renamePlayer(id,name) {
+    const item=findPlayer(id);
+    if(item && name.trim())item.name=name.trim();
 }
-
-/* Remove video */
-
 function removePlayer(id) {
-    const item = findPlayer(id);
-    if (!item) return;
-
-    if (item.player) {
-        try { item.player.destroy(); } catch(e) {}
+    const item=findPlayer(id);
+    if(!item)return;
+    if(item.player){try{item.player.destroy();}catch(e){}}
+    players=players.filter(p=>p.id!==id);
+    soloPreviousMute.delete(id);
+    if(soloPlayerId===id) {
+        soloPlayerId=null;
+        soloPreviousMute.clear();
     }
-
-    players = players.filter(p => p.id !== id);
-
-    if (soloPlayerId === id) {
-        soloPlayerId = null;
-        updateSoloButtons();
-    }
-
-    document.getElementById("tile-" + id)?.remove();
+    document.getElementById("tile-"+id)?.remove();
     updateCount();
+    updateSoloButtons();
 }
-
 function clearAll() {
-    if (!confirm("Remove all videos?")) return;
-
-    [...players].forEach(p => removePlayer(p.id));
+    if(!confirm("Remove all videos?"))return;
+    [...players].forEach(p=>removePlayer(p.id));
+    soloPlayerId=null;
+    soloPreviousMute.clear();
+    updateSoloButtons();
 }
-
-/* Grid layout */
-
 function changeGrid() {
-    const value = document.getElementById("gridSelect").value;
-
-    if (value === "auto") {
-        const count = players.length;
-        const cols = count <= 1 ? 1 :
-                     count <= 4 ? 2 :
-                     count <= 9 ? 3 : 4;
-
-        grid.dataset.cols = cols;
-    } else {
-        grid.dataset.cols = value;
-    }
+    const value=document.getElementById("gridSelect").value;
+    if(value==="auto") {
+        const count=players.length;
+        grid.dataset.cols=count<=1?1:count<=4?2:count<=9?3:4;
+    } else grid.dataset.cols=value;
 }
-
 function updateCount() {
-    const count = players.length;
-
-    document.getElementById("videoCount").textContent =
-        count + (count === 1 ? " VIDEO" : " VIDEOS");
-
-    const empty = document.getElementById("empty");
-
-    if (empty) empty.style.display = count ? "none" : "block";
-
+    const count=players.length;
+    document.getElementById("videoCount").textContent=count+(count===1?" VIDEO":" VIDEOS");
+    const empty=document.getElementById("empty");
+    if(empty)empty.style.display=count?"none":"block";
     changeGrid();
 }
-
-/* Keyboard shortcut */
-
-document.addEventListener("keydown", function(event) {
-    if (event.code !== "Space") return;
-
-    const target = event.target;
-
-    if (
-        target.isContentEditable ||
-        ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.tagName)
-    ) return;
-
+document.addEventListener("keydown",function(event) {
+    if(event.code!=="Space")return;
+    const target=event.target;
+    if(target.isContentEditable || ["INPUT","TEXTAREA","SELECT","BUTTON"].includes(target.tagName))return;
     event.preventDefault();
     toggleSync();
 });
-
-/* Initial status */
-
 updateCount();
 </script>
-
 </body>
 </html>
