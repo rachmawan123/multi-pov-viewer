@@ -66,7 +66,7 @@ function loadSaved(){
   document.getElementById("driftButton").textContent="Drift correction: "+(driftEnabled?"ON":"OFF");document.getElementById("driftButton").classList.toggle("active",driftEnabled);
   if(Array.isArray(s.videos))s.videos.forEach(v=>{
    if(!/^[\w-]{11}$/.test(v.videoId))return;
-   const item={id:++playerCounter,videoId:v.videoId,name:String(v.name||("POV "+playerCounter)).slice(0,60),player:null,sync:v.sync!==false,state:-1,ready:false,offset:Number(v.offset)||0,volume:Number.isFinite(v.volume)?v.volume:70,manualMuted:v.manualMuted!==false};
+   const item={id:++playerCounter,videoId:v.videoId,name:String(v.name||("POV "+playerCounter)).slice(0,60),player:null,sync:v.sync!==false,state:-1,ready:false,offset:Number(v.offset)||0,volume:Number.isFinite(v.volume)?v.volume:70,manualMuted:!!v.manualMuted};
    players.push(item);createTile(item);
   });
   masterId=players.some(p=>p.id===s.masterId)?s.masterId:(players[0]?.id||null);focusId=players.some(p=>p.id===s.focusId)?s.focusId:(masterId);
@@ -91,7 +91,7 @@ function addVideos(){
  const input=document.getElementById("urlInput"),lines=input.value.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);if(!lines.length)return alert("Paste at least one YouTube URL.");
  let added=0,duplicates=0;
  lines.forEach(url=>{const videoId=extractVideoId(url);if(!videoId)return;if(players.some(p=>p.videoId===videoId)){duplicates++;return;}
-  const item={id:++playerCounter,videoId,name:"POV "+playerCounter,player:null,sync:true,state:-1,ready:false,offset:0,volume:70,manualMuted:true};players.push(item);createTile(item);if(youtubeReady)createPlayer(item);added++;
+  const item={id:++playerCounter,videoId,name:"POV "+playerCounter,player:null,sync:true,state:-1,ready:false,offset:0,volume:70,manualMuted:false};players.push(item);createTile(item);if(youtubeReady)createPlayer(item);added++;
  });
  input.value="";if(!masterId&&players.length)masterId=players[0].id;if(!focusId&&players.length)focusId=players[0].id;updateUI();saveState();
  if(!added&&!duplicates)alert("No valid YouTube links found.");else if(duplicates)document.getElementById("syncStatus").textContent=added+" added · "+duplicates+" duplicate(s) skipped";
@@ -131,7 +131,8 @@ function renderOffsets(){
   row.append(name,input,unit,minus,plus);wrap.appendChild(row);
  });
 }
-function setMaster(id){masterId=Number(id)||null;const m=findPlayer(masterId);if(m)m.offset=0;updateUI();}
+function rebaseMaster(nextId){const next=findPlayer(nextId);if(!next)return;const shift=Number(next.offset)||0;players.forEach(p=>p.offset=(Number(p.offset)||0)-shift);next.offset=0;masterId=next.id;}
+function setMaster(id){const nextId=Number(id)||null;if(nextId&&nextId!==masterId)rebaseMaster(nextId);updateUI();}
 function setFocus(id){focusId=Number(id)||null;applyAudio();updateUI();}
 function focusAudio(id){focusId=Number(id);document.getElementById("focusSelect").value=focusId;applyAudio();updateUI();}
 function renamePlayer(id,name){const p=findPlayer(id);if(!p)return;const clean=String(name).replace(/\s+/g," ").trim().slice(0,60);if(clean)p.name=clean;document.getElementById("name-"+id).textContent=p.name;updateUI();}
@@ -202,7 +203,7 @@ function toggleBrowserFullscreen(){if(!document.fullscreenElement)document.docum
 function changeGrid(){const value=document.getElementById("gridSelect").value;if(value==="auto"){const n=players.length;grid.dataset.cols=n<=1?1:n<=4?2:n<=9?3:4;}else grid.dataset.cols=value;}
 function removePlayer(id){
  const p=findPlayer(id);if(!p)return;if(p.player){try{p.player.destroy();}catch(e){}}
- players=players.filter(x=>x.id!==p.id);if(masterId===p.id)masterId=players[0]?.id||null;if(focusId===p.id)focusId=masterId;
+ players=players.filter(x=>x.id!==p.id);if(masterId===p.id){masterId=null;if(players.length)rebaseMaster(players[0].id);}if(focusId===p.id)focusId=masterId;
  document.getElementById("tile-"+id)?.remove();updateUI();applyAudio();
 }
 function clearAll(){if(!players.length)return;if(!confirm("Remove all POVs?"))return;[...players].forEach(p=>{if(p.player){try{p.player.destroy();}catch(e){}}});players=[];masterId=null;focusId=null;grid.innerHTML='<div class="empty" id="empty">▦<br><strong>NO POVS YET</strong><br>Paste YouTube links above to build your multi-view.</div>';updateUI();saveState();}
