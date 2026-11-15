@@ -2,441 +2,212 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#0b0e14">
 <title>Multi POV Viewer</title>
 <style>
-:root {
-    --bg:#090b10; --panel:#121722; --panel2:#1a2230;
-    --border:#293345; --text:#e8edf6; --muted:#8995a8;
-    --accent:#668cff; --green:#35c98a; --red:#f16b75;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
-button,textarea,input,select{font:inherit}
-button{cursor:pointer;border:1px solid var(--border);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:7px;transition:.15s}
-button:hover{border-color:var(--accent);background:#26334a}
-button:active{transform:scale(.97)}
-.topbar{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:#10141d;flex-wrap:wrap}
-.logo{font-size:18px;font-weight:800;letter-spacing:.5px}
-.logo span{color:var(--accent)}
-.status{font-size:12px;color:var(--muted)}
-.container{padding:15px;max-width:2200px;margin:auto}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
-.panel-title{font-size:13px;font-weight:700;margin-bottom:10px;color:#cbd5e5}
-.url-area{display:flex;gap:10px;flex-wrap:wrap}
-textarea{background:#090e17;border:1px solid var(--border);color:white;border-radius:7px;padding:12px;resize:vertical;flex:1;min-width:240px;min-height:75px;outline:none}
-textarea:focus{border-color:var(--accent)}
-button.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:700}
-button.primary:hover{background:#5279e5}
-.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
-.toolbar .separator{width:1px;height:27px;background:var(--border);margin:0 3px}
-.green{color:var(--green)}
-.grid-info{display:flex;justify-content:space-between;align-items:center;margin:15px 2px 10px;color:var(--muted);font-size:12px;gap:10px;flex-wrap:wrap}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.grid[data-cols="1"]{grid-template-columns:1fr}
-.grid[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
-.grid[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
-.grid[data-cols="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
-.tile{background:#101722;border:1px solid var(--border);border-radius:9px;overflow:hidden;min-width:0}
-.tile-header{min-height:40px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;background:#171f2d;border-bottom:1px solid var(--border)}
-.tile-name{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tile-actions{display:flex;gap:5px;flex-shrink:0}
-.tile-actions button{padding:5px 8px;font-size:11px}
-.player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:black}
-.player-wrap iframe{width:100%;height:100%;position:absolute;inset:0}
-.tile-footer{padding:9px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted)}
-.tile-footer label{display:flex;align-items:center;gap:5px;cursor:pointer}
-.tile-footer input{accent-color:var(--accent)}
-.volume-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 9px 10px;font-size:11px;color:var(--muted)}
-.volume-controls input[type="range"]{width:105px;accent-color:var(--accent);cursor:pointer}
-.volume-controls output{min-width:30px;text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
-.global-volume{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
-.global-volume input[type="range"]{width:min(240px,45vw);accent-color:var(--accent)}
-.solo-btn.active{background:#235e49;border-color:var(--green);color:#8cf0c3}
-.tile:fullscreen{width:100%;height:100%;overflow-y:auto;background:black;display:flex;flex-direction:column;border:0;border-radius:0}
-.tile:fullscreen .player-wrap{flex:1;aspect-ratio:auto;min-height:0}
-.tile:fullscreen .player-wrap iframe{width:100%;height:100%}
-.tile:fullscreen .tile-header,.tile:fullscreen .tile-footer{flex-shrink:0}
-.empty{text-align:center;padding:55px 15px;color:var(--muted);border:1px dashed var(--border);border-radius:10px;line-height:2}
-.hint{color:var(--muted);font-size:11px;line-height:1.7;margin-top:10px}
-select{background:var(--panel2);color:white;border:1px solid var(--border);border-radius:7px;padding:8px}
-.key{display:inline-block;background:#273249;border:1px solid #3a4861;padding:2px 7px;border-radius:5px;font-weight:700;font-size:12px}
-@media(max-width:900px){.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:550px){.grid,.grid[data-cols="2"],.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:1fr}.container{padding:8px}.topbar{padding:12px}}
+:root{color-scheme:dark;--bg:#0b0e14;--panel:#121722;--panel2:#192130;--line:#273244;--text:#e9edf5;--muted:#8995a8;--accent:#7898ff;--good:#48d6a0;--warn:#e8bb69;--bad:#f17b83}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}button,select,input[type=number],textarea{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:8px}button{padding:8px 11px;cursor:pointer;transition:background .15s,border-color .15s}button:hover{border-color:#607ec7;background:#222d40}button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:#5578e8;border-color:#5578e8;color:white;font-weight:650}.primary:hover{background:#6688f5}.subtle{background:transparent}.danger{color:var(--bad)}.active{border-color:var(--accent)!important;background:#24365a!important;color:#dce6ff}.topbar{height:58px;padding:0 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0e131c;position:sticky;top:0;z-index:10}.brand{font-weight:800;letter-spacing:.07em}.brand span{color:var(--accent)}.api-status{font-size:12px;color:var(--muted)}.api-status.ready{color:var(--good)}main{max-width:1900px;margin:auto;padding:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.panel-title{font-size:12px;font-weight:750;letter-spacing:.08em;color:#b8c4d8}.muted{color:var(--muted)}.small{font-size:12px}.add-row{display:flex;gap:9px;align-items:stretch}.add-row textarea{flex:1;min-width:0;min-height:66px;resize:vertical;padding:11px;background:#0b1019;outline:none}.add-row textarea:focus,input:focus,select:focus{outline:1px solid var(--accent);border-color:var(--accent)}.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.toolbar+.toolbar{margin-top:10px}.split{height:25px;width:1px;background:var(--line);margin:0 4px}.key{font-size:11px;border:1px solid #3a4861;background:#202a3a;border-radius:5px;padding:2px 6px;margin-right:4px}.field{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.field select,.field input[type=number]{padding:7px 8px;min-width:0}.field input[type=range]{width:120px;accent-color:var(--accent)}.field output{min-width:34px;color:var(--text);font-variant-numeric:tabular-nums}.sync-grid{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) minmax(180px,1.3fr);gap:12px;align-items:end}.sync-grid label,.audio-grid label{display:grid;gap:5px;font-size:11px;color:var(--muted)}.sync-grid select,.sync-grid input,.audio-grid select,.audio-grid input{width:100%;padding:8px}.sync-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.offset-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:7px;margin-top:12px}.offset-row{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--line);border-radius:8px;background:#0f141e;min-width:0}.offset-name{font-size:12px;font-weight:650;min-width:55px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.offset-row input{width:85px;padding:6px;text-align:right;font-variant-numeric:tabular-nums}.offset-row .unit{font-size:11px;color:var(--muted)}.offset-row button{padding:5px 7px;font-size:11px}.audio-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}.audio-grid input[type=range]{accent-color:var(--accent)}.audio-note{font-size:11px;color:var(--muted);margin-top:9px}.grid-info{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:16px 2px 9px;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid[data-cols="1"]{grid-template-columns:1fr}.grid[data-cols="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}.grid[data-cols="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}.grid[data-cols="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}.tile{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:11px;background:#101722}.tile.master{border-color:#668cff;box-shadow:0 0 0 1px #668cff33}.tile-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#171f2d;border-bottom:1px solid var(--line)}.tile-title{display:flex;align-items:center;gap:7px;min-width:0}.tile-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;cursor:text}.master-tag{font-size:9px;letter-spacing:.06em;color:#dce6ff;background:#304779;border-radius:4px;padding:2px 5px}.tile-actions{display:flex;gap:5px;flex-shrink:0}.tile-actions button{font-size:11px;padding:5px 7px}.player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000}.player-wrap>div,.player-wrap iframe{position:absolute;inset:0;width:100%;height:100%}.tile-meta{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:8px 10px 5px;color:var(--muted);font-size:11px}.tile-meta label{display:flex;align-items:center;gap:5px;cursor:pointer}.tile-meta input{accent-color:var(--accent)}.tile-state{margin-left:auto;font-variant-numeric:tabular-nums}.tile-bottom{display:flex;align-items:center;gap:8px;padding:5px 10px 10px}.tile-bottom input[type=range]{flex:1;min-width:60px;accent-color:var(--accent)}.tile-bottom output{font-size:11px;color:var(--text);min-width:32px;text-align:right}.tile-bottom button{font-size:11px;padding:5px 8px}.empty{padding:55px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:11px;line-height:2;grid-column:1/-1}.hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6}.notice{font-size:12px;color:var(--muted);padding:8px 10px;background:#0e141e;border-radius:8px;margin-top:10px}.notice strong{color:var(--text)}.hidden{display:none!important}.tile:fullscreen{width:100%;height:100%;display:flex;flex-direction:column;background:#000;border:0}.tile:fullscreen .player-wrap{flex:1;aspect-ratio:auto;min-height:0}.tile:fullscreen .tile-head,.tile:fullscreen .tile-meta,.tile:fullscreen .tile-bottom{flex-shrink:0}
+@media(max-width:950px){.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.audio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){main{padding:9px}.topbar{height:52px;padding:0 12px}.panel{padding:11px}.add-row{flex-direction:column}.add-row button{align-self:flex-start}.grid,.grid[data-cols="2"],.grid[data-cols="3"],.grid[data-cols="4"]{grid-template-columns:1fr}.sync-grid,.audio-grid{grid-template-columns:1fr 1fr}.tile-name{max-width:135px}.toolbar button{font-size:12px}.split{display:none}}
 </style>
 </head>
 <body>
-<header class="topbar">
-    <div class="logo">MULTI <span>POV</span> VIEWER</div>
-    <div class="status" id="status">Loading YouTube API...</div>
-</header>
-<main class="container">
-    <section class="panel">
-        <div class="panel-title">ADD YOUTUBE VIDEOS</div>
-        <div class="url-area">
-            <textarea id="urlInput" placeholder="Paste YouTube URLs here (one URL per line)...&#10;&#10;https://www.youtube.com/watch?v=VIDEO_ID&#10;https://youtu.be/VIDEO_ID&#10;https://www.youtube.com/live/VIDEO_ID"></textarea>
-            <button class="primary" onclick="addVideos()">+ ADD VIDEOS</button>
-        </div>
-        <div class="hint">Paste 4, 8, 10 or more YouTube links at once. Supports regular videos, Shorts and YouTube Live where embedding is allowed.</div>
-    </section>
-
-    <section class="panel">
-        <div class="panel-title">GLOBAL CONTROLS</div>
-        <div class="toolbar">
-            <button class="primary" onclick="toggleSync()"><span class="key">SPACE</span> PLAY / PAUSE SYNC</button>
-            <button onclick="playAll()">▶ PLAY ALL</button>
-            <button onclick="pauseAll()">Ⅱ PAUSE ALL</button>
-            <div class="separator"></div>
-            <button onclick="muteAll()">🔇 MUTE ALL</button>
-            <button onclick="unmuteAll()">🔊 UNMUTE ALL</button>
-            <div class="separator"></div>
-            <button onclick="syncPositions()">↻ SYNC POSITION</button>
-        </div>
-        <div class="global-volume">
-            <strong>MASTER VOLUME</strong>
-            <input id="globalVolume" type="range" min="0" max="100" value="70"
-                oninput="setGlobalVolume(this.value)">
-            <output id="globalVolumeValue">70%</output>
-            <button onclick="setGlobalVolume(0)">0%</button>
-            <button onclick="setGlobalVolume(100)">100%</button>
-        </div>
-        <div class="toolbar">
-            <span style="font-size:12px;color:#8995a8">GRID:</span>
-            <select id="gridSelect" onchange="changeGrid()">
-                <option value="auto">Auto</option><option value="1">1 Column</option>
-                <option value="2" selected>2 Columns</option><option value="3">3 Columns</option>
-                <option value="4">4 Columns</option>
-            </select>
-            <button onclick="toggleBrowserFullscreen()">⛶ APP FULLSCREEN</button>
-            <button onclick="clearAll()" style="color:#f16b75">✕ CLEAR ALL</button>
-        </div>
-        <div class="hint"><span class="key">SPACE</span> Play/Pause videos with Follow Space enabled. <span class="key">F11</span> Browser fullscreen. <span class="key">ESC</span> Exit individual fullscreen.</div>
-    </section>
-
-    <div class="grid-info"><span id="videoCount">0 VIDEOS</span><span>Each POV has independent controls</span></div>
-    <section id="videoGrid" class="grid" data-cols="2">
-        <div class="empty" id="empty"><div style="font-size:32px">▦</div><b>NO VIDEOS ADDED</b><br>Paste your YouTube POV links above to get started.</div>
-    </section>
+<header class="topbar"><div class="brand">MULTI <span>POV</span> VIEWER</div><div id="status" class="api-status">Connecting to YouTube…</div></header>
+<main>
+<section class="panel">
+ <div class="panel-head"><div class="panel-title">ADD STREAMS</div><span class="small muted">YouTube videos · VODs · live streams</span></div>
+ <div class="add-row"><textarea id="urlInput" placeholder="Paste YouTube links — one per line&#10;youtube.com/watch?v=…  ·  youtu.be/…  ·  youtube.com/live/…"></textarea><button class="primary" onclick="addVideos()">＋ Add POVs</button></div>
+ <div class="hint">Paste multiple links at once. Some videos may block embedding because of the creator's YouTube settings.</div>
+</section>
+<section class="panel">
+ <div class="panel-head"><div class="panel-title">PLAYBACK & SYNC</div><span class="small muted" id="syncStatus">Offsets are saved in this browser</span></div>
+ <div class="toolbar">
+  <button class="primary" onclick="toggleSync()"><span class="key">SPACE</span> Play / Pause group</button>
+  <button onclick="prepareAndStart()">▶ Prepare & Start</button><button onclick="pauseAll()">Ⅱ Pause all</button>
+  <span class="split"></span><button onclick="alignAll()">↔ Apply offsets</button><button onclick="toggleDriftCorrection()" id="driftButton" class="active">Drift correction: ON</button>
+ </div>
+ <div class="sync-grid" style="margin-top:13px">
+  <label>MASTER POV<select id="masterSelect" onchange="setMaster(this.value)"><option value="">No POVs yet</option></select></label>
+  <label>GRID<select id="gridSelect" onchange="changeGrid()"><option value="auto">Auto</option><option value="1">1 column</option><option value="2" selected>2 columns</option><option value="3">3 columns</option><option value="4">4 columns</option></select></label>
+  <label>MASTER VOLUME <span class="field"><input id="masterVolume" type="range" min="0" max="100" value="70" oninput="setMasterVolume(this.value)"><output id="masterVolumeValue">70%</output></span></label>
+ </div>
+ <div class="sync-actions"><button onclick="captureOffsets()">Capture current alignment</button><button class="subtle" onclick="resetOffsets()">Reset offsets</button><button class="subtle" onclick="toggleBrowserFullscreen()">⛶ Fullscreen</button><button class="subtle danger" onclick="clearAll()">Clear all POVs</button></div>
+ <div id="offsetList" class="offset-list"></div>
+ <div class="notice"><strong>How offsets work:</strong> Pause streams at the same gameplay moment, then choose “Capture current alignment”. The app records each POV's time difference from the Master. A positive offset seeks further into that POV; a negative offset seeks earlier. Use “Apply offsets” whenever you want to realign.</div>
+ <div class="hint">Prepare & Start waits briefly for players to buffer, seeks each POV to its offset-adjusted position, then sends the play commands together. YouTube does not expose exact frame timing or a guaranteed buffer-ready signal, so perfect simultaneous starts cannot be guaranteed.</div>
+</section>
+<section class="panel">
+ <div class="panel-head"><div class="panel-title">AUDIO MIXER</div><span class="small muted" id="audioStatus">Choose how the POV audio should behave</span></div>
+ <div class="audio-grid">
+  <label>AUDIO MODE<select id="audioMode" onchange="setAudioMode(this.value)"><option value="smart">Smart focus</option><option value="discord">Single POV / Discord</option><option value="proximity">Proximity / Manual mix</option></select></label>
+  <label>FOCUS POV<select id="focusSelect" onchange="setFocus(this.value)"><option value="">No POVs yet</option></select></label>
+  <label>BACKGROUND VOLUME <span class="field"><input id="backgroundVolume" type="range" min="0" max="100" value="22" oninput="setBackgroundVolume(this.value)"><output id="backgroundVolumeValue">22%</output></span></label>
+  <label>MASTER AUDIO <button id="masterMuteButton" onclick="toggleMasterMute()">Mute all audio</button></label>
+ </div>
+ <div class="audio-note" id="audioDescription">Smart focus keeps the selected POV clear and lowers the other POVs so you can still hear nearby conversations.</div>
+</section>
+<div class="grid-info"><span id="videoCount">0 POVs</span><span>Rename a POV by clicking its title · Each player keeps its own volume</span></div>
+<section id="videoGrid" class="grid" data-cols="2"><div class="empty" id="empty">▦<br><strong>NO POVS YET</strong><br>Paste YouTube links above to build your multi-view.</div></section>
 </main>
-
 <script>
-let players = [];
-let playerCounter = 0;
-let youtubeReady = false;
-let soloPlayerId = null;
-let soloPreviousMute = new Map();
-let globalVolume = 70;
-
-const grid = document.getElementById("videoGrid");
-const statusText = document.getElementById("status");
-
-const apiScript = document.createElement("script");
-apiScript.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(apiScript);
-
-window.onYouTubeIframeAPIReady = function() {
-    youtubeReady = true;
-    statusText.textContent = "YouTube API Ready";
-    statusText.className = "status green";
-    players.forEach(item => createPlayer(item));
-};
-
-function extractVideoId(url) {
-    url = url.trim();
-    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
-    try {
-        const parsed = new URL(url);
-        const host = parsed.hostname.replace(/^www\./, "");
-        if (host === "youtu.be") return parsed.pathname.split("/").filter(Boolean)[0] || null;
-        if (host.endsWith("youtube.com")) {
-            const params = parsed.searchParams;
-            if (params.get("v")) return params.get("v");
-            const parts = parsed.pathname.split("/").filter(Boolean);
-            if (["embed","shorts","live","v"].includes(parts[0])) return parts[1] || null;
-        }
-    } catch(e) {}
-    return null;
+let players=[],playerCounter=0,youtubeReady=false,masterId=null,focusId=null,masterVolume=70,backgroundVolume=22,audioMode="smart",masterMuted=false,driftEnabled=true,driftTimer=null,soloLegacy=null;
+const grid=document.getElementById("videoGrid"),statusText=document.getElementById("status");
+const STORAGE_KEY="multiPovViewer.v2";
+function loadSaved(){
+ try{
+  const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");if(!s)return;
+  masterVolume=Number.isFinite(s.masterVolume)?s.masterVolume:70;backgroundVolume=Number.isFinite(s.backgroundVolume)?s.backgroundVolume:22;
+  audioMode=["smart","discord","proximity"].includes(s.audioMode)?s.audioMode:"smart";masterMuted=!!s.masterMuted;driftEnabled=s.driftEnabled!==false;
+  document.getElementById("masterVolume").value=masterVolume;document.getElementById("masterVolumeValue").textContent=masterVolume+"%";
+  document.getElementById("backgroundVolume").value=backgroundVolume;document.getElementById("backgroundVolumeValue").textContent=backgroundVolume+"%";
+  document.getElementById("audioMode").value=audioMode;
+  document.getElementById("driftButton").textContent="Drift correction: "+(driftEnabled?"ON":"OFF");document.getElementById("driftButton").classList.toggle("active",driftEnabled);
+  if(Array.isArray(s.videos))s.videos.forEach(v=>{
+   if(!/^[\w-]{11}$/.test(v.videoId))return;
+   const item={id:++playerCounter,videoId:v.videoId,name:String(v.name||("POV "+playerCounter)).slice(0,60),player:null,sync:v.sync!==false,state:-1,ready:false,offset:Number(v.offset)||0,volume:Number.isFinite(v.volume)?v.volume:70,manualMuted:v.manualMuted!==false};
+   players.push(item);createTile(item);
+  });
+  masterId=players.some(p=>p.id===s.masterId)?s.masterId:(players[0]?.id||null);focusId=players.some(p=>p.id===s.focusId)?s.focusId:(masterId);
+ }catch(e){console.warn("Could not restore saved viewer settings",e);}
 }
-
-function addVideos() {
-    const input = document.getElementById("urlInput");
-    const lines = input.value.split(/\n|,/).map(x => x.trim()).filter(Boolean);
-    if (!lines.length) return alert("Please paste at least one YouTube URL.");
-    let added = 0;
-    lines.forEach(url => {
-        const videoId = extractVideoId(url);
-        if (!videoId) { console.warn("Invalid YouTube URL:", url); return; }
-        const item = {id:++playerCounter,videoId,name:"POV "+playerCounter,player:null,sync:true,state:-1,ready:false};
-        players.push(item);
-        createTile(item);
-        if (youtubeReady) createPlayer(item);
-        added++;
-    });
-    input.value = "";
-    updateCount();
-    if (!added) alert("No valid YouTube video links found.");
+function saveState(){
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify({masterVolume,backgroundVolume,audioMode,masterMuted,driftEnabled,masterId,focusId,videos:players.map(p=>({videoId:p.videoId,name:p.name,sync:p.sync,offset:p.offset,volume:p.volume,manualMuted:p.manualMuted}))}));}catch(e){}
 }
-
-function createTile(item) {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.id = "tile-"+item.id;
-    tile.innerHTML = `
-        <div class="tile-header">
-            <div class="tile-name"><span contenteditable="true" spellcheck="false" onblur="renamePlayer(${item.id},this.textContent)" title="Click to rename">${item.name}</span></div>
-            <div class="tile-actions">
-                <button onclick="toggleIndividual(${item.id})" title="Play/Pause">▶ / Ⅱ</button>
-                <button onclick="fullscreenTile(${item.id})" title="Fullscreen">⛶</button>
-                <button onclick="removePlayer(${item.id})" title="Remove" style="color:#f16b75">✕</button>
-            </div>
-        </div>
-        <div class="player-wrap"><div id="yt-player-${item.id}"></div></div>
-        <div class="tile-footer">
-            <label title="Include this video in Space sync"><input type="checkbox" checked onchange="setSync(${item.id},this.checked)"> Follow Space</label>
-            <label title="Mute this POV"><input type="checkbox" checked onchange="setMute(${item.id},this.checked)"> Mute</label>
-            <button class="solo-btn" id="solo-${item.id}" onclick="soloAudio(${item.id})">SOLO</button>
-            <span id="state-${item.id}">Loading...</span>
-        </div>
-        <div class="volume-controls">
-            <label for="volume-${item.id}">Volume</label>
-            <input id="volume-${item.id}" type="range" min="0" max="100" value="${globalVolume}"
-                oninput="setPlayerVolume(${item.id},this.value)">
-            <output id="volume-value-${item.id}">${globalVolume}%</output>
-        </div>`;
-    grid.appendChild(tile);
+const apiScript=document.createElement("script");apiScript.src="https://www.youtube.com/iframe_api";document.head.appendChild(apiScript);
+window.onYouTubeIframeAPIReady=function(){youtubeReady=true;statusText.textContent="YouTube API connected";statusText.classList.add("ready");players.forEach(createPlayer);startDriftTimer();};
+function extractVideoId(raw){
+ const value=raw.trim();if(/^[a-zA-Z0-9_-]{11}$/.test(value))return value;
+ try{const u=new URL(value);const host=u.hostname.toLowerCase().replace(/^www\./,"");
+  if(host==="youtu.be"){const id=u.pathname.split("/").filter(Boolean)[0];return /^[\w-]{11}$/.test(id||"")?id:null;}
+  if(host==="youtube.com"||host==="m.youtube.com"||host==="music.youtube.com"||host==="youtube-nocookie.com"||host==="www.youtube-nocookie.com"){
+   const parts=u.pathname.split("/").filter(Boolean),id=u.searchParams.get("v")||( ["embed","shorts","live","v"].includes(parts[0])?parts[1]:null);
+   return /^[\w-]{11}$/.test(id||"")?id:null;
+  }
+ }catch(e){}return null;
 }
-
-function createPlayer(item) {
-    if (item.player) return;
-    item.player = new YT.Player("yt-player-"+item.id, {
-        videoId:item.videoId,
-        playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,enablejsapi:1,origin:location.origin},
-        events:{
-            onReady:function(event) {
-                item.ready = true;
-                item.volume = globalVolume;
-                event.target.setVolume(globalVolume);
-                event.target.mute();
-                const state = document.getElementById("state-"+item.id);
-                if (state) state.textContent = "Ready";
-            },
-            onStateChange:function(event) {
-                item.state = event.data;
-                const state = document.getElementById("state-"+item.id);
-                if (!state) return;
-                if (event.data === YT.PlayerState.PLAYING) {state.textContent="● PLAYING";state.style.color="#35c98a";}
-                else if (event.data === YT.PlayerState.PAUSED) {state.textContent="Ⅱ PAUSED";state.style.color="#f0bd62";}
-                else if (event.data === YT.PlayerState.ENDED) {state.textContent="ENDED";state.style.color="#8995a8";}
-                else {state.textContent="READY";state.style.color="#8995a8";}
-            },
-            onError:function() {
-                const state = document.getElementById("state-"+item.id);
-                if (state) {state.textContent="Unavailable / Embed blocked";state.style.color="#f16b75";}
-            }
-        }
-    });
+function addVideos(){
+ const input=document.getElementById("urlInput"),lines=input.value.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);if(!lines.length)return alert("Paste at least one YouTube URL.");
+ let added=0,duplicates=0;
+ lines.forEach(url=>{const videoId=extractVideoId(url);if(!videoId)return;if(players.some(p=>p.videoId===videoId)){duplicates++;return;}
+  const item={id:++playerCounter,videoId,name:"POV "+playerCounter,player:null,sync:true,state:-1,ready:false,offset:0,volume:70,manualMuted:true};players.push(item);createTile(item);if(youtubeReady)createPlayer(item);added++;
+ });
+ input.value="";if(!masterId&&players.length)masterId=players[0].id;if(!focusId&&players.length)focusId=players[0].id;updateUI();saveState();
+ if(!added&&!duplicates)alert("No valid YouTube links found.");else if(duplicates)document.getElementById("syncStatus").textContent=added+" added · "+duplicates+" duplicate(s) skipped";
 }
-
-function findPlayer(id) { return players.find(p => p.id === id); }
-
-function setPlayerVolume(id, value) {
-    const item = findPlayer(id);
-    if (!item) return;
-    const volume = Math.max(0, Math.min(100, Number(value) || 0));
-    item.volume = volume;
-
-    if (item.ready) item.player.setVolume(volume);
-
-    const slider = document.getElementById("volume-"+id);
-    const output = document.getElementById("volume-value-"+id);
-    if (slider && Number(slider.value) !== volume) slider.value = volume;
-    if (output) output.textContent = volume + "%";
+function createTile(item){
+ const tile=document.createElement("article");tile.className="tile";tile.id="tile-"+item.id;
+ tile.innerHTML='<div class="tile-head"><div class="tile-title"><span class="tile-name" id="name-'+item.id+'" title="Click to rename" role="textbox" aria-label="Rename POV" contenteditable="true" spellcheck="false"></span><span class="master-tag hidden" id="master-tag-'+item.id+'">MASTER</span></div><div class="tile-actions"><button onclick="toggleIndividual('+item.id+')" title="Play or pause">▶ / Ⅱ</button><button onclick="focusAudio('+item.id+')" title="Focus this POV audio">Focus</button><button onclick="fullscreenTile('+item.id+')" title="Fullscreen">⛶</button><button class="danger" onclick="removePlayer('+item.id+')" title="Remove POV">✕</button></div></div><div class="player-wrap"><div id="yt-player-'+item.id+'"></div></div><div class="tile-meta"><label><input type="checkbox" '+(item.sync?'checked':'')+' onchange="setSync('+item.id+',this.checked)"> Follow sync</label><label><input id="mute-'+item.id+'" type="checkbox" '+(item.manualMuted?'checked':'')+' onchange="setManualMute('+item.id+',this.checked)"> Mute</label><span class="tile-state" id="state-'+item.id+'">Waiting for API…</span></div><div class="tile-bottom"><span class="small muted">Volume</span><input id="volume-'+item.id+'" type="range" min="0" max="100" value="'+item.volume+'" oninput="setPlayerVolume('+item.id+',this.value)"><output id="volume-value-'+item.id+'">'+item.volume+'%</output></div>';
+ grid.appendChild(tile);const name=document.getElementById("name-"+item.id);name.textContent=item.name;name.addEventListener("blur",()=>renamePlayer(item.id,name.textContent));name.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();name.blur();}});
 }
-
-function setGlobalVolume(value) {
-    globalVolume = Math.max(0, Math.min(100, Number(value) || 0));
-
-    const slider = document.getElementById("globalVolume");
-    const output = document.getElementById("globalVolumeValue");
-    if (slider) slider.value = globalVolume;
-    if (output) output.textContent = globalVolume + "%";
-
-    // Master volume updates every POV without changing its mute/solo state.
-    players.forEach(item => setPlayerVolume(item.id, globalVolume));
+function createPlayer(item){
+ if(item.player||!youtubeReady)return;
+ item.player=new YT.Player("yt-player-"+item.id,{videoId:item.videoId,playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,enablejsapi:1,origin:location.origin},events:{
+  onReady:e=>{item.ready=true;item.state=e.target.getPlayerState();e.target.setVolume(item.volume);e.target.mute();setTileState(item,"READY");applyAudio();updateUI();},
+  onStateChange:e=>{item.state=e.data;const labels={1:"● PLAYING",2:"Ⅱ PAUSED",3:"BUFFERING",5:"CUED",0:"ENDED"};setTileState(item,labels[e.data]||"READY");},
+  onError:()=>setTileState(item,"Unavailable / embed blocked")
+ }});
 }
-
-function toggleIndividual(id) {
-    const item = findPlayer(id);
-    if (!item || !item.ready) return;
-    if (item.state === YT.PlayerState.PLAYING) item.player.pauseVideo();
-    else item.player.playVideo();
+function setTileState(item,label){const el=document.getElementById("state-"+item.id);if(el){el.textContent=label;el.style.color=label.includes("PLAYING")?"var(--good)":label.includes("BUFFER")?"var(--warn)":label.includes("Unavailable")?"var(--bad)":"var(--muted)";}}
+function findPlayer(id){return players.find(p=>p.id===Number(id));}
+function getMaster(){return findPlayer(masterId)||players.find(p=>p.ready)||null;}
+function getGroup(){return players.filter(p=>p.sync&&p.ready);}
+function updateUI(){
+ const count=players.length;document.getElementById("videoCount").textContent=count+" POV"+(count===1?"":"s");const empty=document.getElementById("empty");if(empty)empty.classList.toggle("hidden",count>0);
+ const master=document.getElementById("masterSelect"),focus=document.getElementById("focusSelect");
+ const fill=(select,selected)=>{const old=select.value;select.innerHTML="";if(!players.length){select.add(new Option("No POVs yet",""));return;}players.forEach(p=>select.add(new Option(p.name,p.id)));select.value=players.some(p=>String(p.id)===String(selected))?String(selected):String(players[0].id);};
+ fill(master,masterId);fill(focus,focusId);if(players.length){if(!players.some(p=>p.id===masterId))masterId=players[0].id;if(!players.some(p=>p.id===focusId))focusId=masterId;master.value=masterId;focus.value=focusId;}
+ players.forEach(p=>{const tile=document.getElementById("tile-"+p.id);if(tile)tile.classList.toggle("master",p.id===masterId);const tag=document.getElementById("master-tag-"+p.id);if(tag)tag.classList.toggle("hidden",p.id!==masterId);});
+ renderOffsets();updateAudioDescription();document.getElementById("masterMuteButton").textContent=masterMuted?"Unmute all audio":"Mute all audio";document.getElementById("driftButton").textContent="Drift correction: "+(driftEnabled?"ON":"OFF");document.getElementById("driftButton").classList.toggle("active",driftEnabled);changeGrid();saveState();
 }
-
-function setSync(id,value) {
-    const item=findPlayer(id);
-    if(item)item.sync=value;
+function renderOffsets(){
+ const wrap=document.getElementById("offsetList");wrap.innerHTML="";players.forEach(p=>{
+  const row=document.createElement("div");row.className="offset-row";const name=document.createElement("span");name.className="offset-name";name.textContent=p.name;name.title=p.name;
+  const input=document.createElement("input");input.type="number";input.step="1";input.value=Math.round(p.offset);input.setAttribute("aria-label",p.name+" offset in seconds");input.addEventListener("change",()=>{p.offset=Number(input.value)||0;if(p.id===masterId)p.offset=0;input.value=Math.round(p.offset);saveState();});
+  const unit=document.createElement("span");unit.className="unit";unit.textContent="sec";
+  const minus=document.createElement("button");minus.textContent="−5";minus.title="Seek offset 5 seconds earlier";minus.onclick=()=>adjustOffset(p.id,-5);
+  const plus=document.createElement("button");plus.textContent="+5";plus.title="Seek offset 5 seconds later";plus.onclick=()=>adjustOffset(p.id,5);
+  row.append(name,input,unit,minus,plus);wrap.appendChild(row);
+ });
 }
-
-function setMute(id,muted) {
-    const item=findPlayer(id);
-    if(!item || !item.ready)return;
-    item.player[muted ? "mute" : "unMute"]();
-
-    // A manual mute change exits SOLO so the user's new audio choice is respected.
-    if(soloPlayerId !== null) {
-        soloPlayerId=null;
-        soloPreviousMute.clear();
-        updateSoloButtons();
-    }
+function setMaster(id){masterId=Number(id)||null;const m=findPlayer(masterId);if(m)m.offset=0;updateUI();}
+function setFocus(id){focusId=Number(id)||null;applyAudio();updateUI();}
+function focusAudio(id){focusId=Number(id);document.getElementById("focusSelect").value=focusId;applyAudio();updateUI();}
+function renamePlayer(id,name){const p=findPlayer(id);if(!p)return;const clean=String(name).replace(/\s+/g," ").trim().slice(0,60);if(clean)p.name=clean;document.getElementById("name-"+id).textContent=p.name;updateUI();}
+function setSync(id,value){const p=findPlayer(id);if(p){p.sync=!!value;saveState();}}
+function adjustOffset(id,delta){const p=findPlayer(id);if(!p||p.id===masterId)return;p.offset=(Number(p.offset)||0)+delta;renderOffsets();saveState();}
+function captureOffsets(){
+ const master=getMaster();if(!master||!master.ready)return alert("Choose a ready Master POV first.");const base=master.player.getCurrentTime();master.offset=0;
+ players.filter(p=>p.ready).forEach(p=>{p.offset=p.id===master.id?0:Math.round(p.player.getCurrentTime()-base);});
+ renderOffsets();saveState();document.getElementById("syncStatus").textContent="Captured offsets from "+master.name+" at "+formatTime(base);
 }
-
-function getSyncPlayers() { return players.filter(p=>p.sync && p.ready); }
-
-function toggleSync() {
-    const list=getSyncPlayers();
-    if(!list.length)return;
-    const somethingPlaying=list.some(p=>p.state===YT.PlayerState.PLAYING);
-    list.forEach(p=>p.player[somethingPlaying ? "pauseVideo" : "playVideo"]());
+function resetOffsets(){players.forEach(p=>p.offset=0);renderOffsets();saveState();}
+function formatTime(seconds){if(!Number.isFinite(seconds))return"—";const s=Math.max(0,Math.floor(seconds));return String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function alignAll(){
+ const master=getMaster(),list=getGroup();if(!master||!master.ready||list.length<2)return alert("Add at least two ready POVs and choose a Master.");
+ const base=master.player.getCurrentTime();list.forEach(p=>{const target=Math.max(0,base+(p.id===master.id?0:p.offset||0));p.player.seekTo(target,true);});document.getElementById("syncStatus").textContent="Applied offsets · Master "+formatTime(base);
 }
-
-function playAll() { players.filter(p=>p.ready).forEach(p=>p.player.playVideo()); }
-function pauseAll() { players.filter(p=>p.ready).forEach(p=>p.player.pauseVideo()); }
-
-function muteAll() {
-    soloPlayerId=null;
-    soloPreviousMute.clear();
-    players.filter(p=>p.ready).forEach(p=>{
-        p.player.mute();
-        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
-        if(checkbox)checkbox.checked=true;
-    });
-    updateSoloButtons();
+async function prepareAndStart(){
+ const list=getGroup();if(!list.length)return alert("No ready POVs with Follow sync enabled.");const master=getMaster();if(!master||!master.ready)return alert("The Master POV is not ready.");
+ const button=Array.from(document.querySelectorAll("button")).find(b=>b.textContent.includes("Prepare & Start"));if(button){button.disabled=true;button.textContent="Preparing…";}
+ document.getElementById("syncStatus").textContent="Waiting briefly for streams to buffer…";
+ const started=Date.now();
+ while(Date.now()-started<9000){
+  const enough=list.every(p=>p.ready&&(p.player.getPlayerState()===YT.PlayerState.PLAYING||p.player.getPlayerState()===YT.PlayerState.PAUSED||p.player.getPlayerState()===YT.PlayerState.CUED)&&(p.player.getVideoLoadedFraction()>=0.04||p.player.getPlayerState()===YT.PlayerState.PLAYING));
+  if(enough)break;await new Promise(resolve=>setTimeout(resolve,300));
+ }
+ const base=master.player.getCurrentTime();
+ list.forEach(p=>{p.player.pauseVideo();p.player.seekTo(Math.max(0,base+(p.id===master.id?0:p.offset||0)),true);});
+ await new Promise(resolve=>setTimeout(resolve,350));
+ requestAnimationFrame(()=>list.forEach(p=>p.player.playVideo()));
+ document.getElementById("syncStatus").textContent="Start command sent to "+list.length+" POVs · "+formatTime(base);
+ if(button){button.disabled=false;button.textContent="▶ Prepare & Start";}
 }
-
-function unmuteAll() {
-    soloPlayerId=null;
-    soloPreviousMute.clear();
-    players.filter(p=>p.ready).forEach(p=>{
-        p.player.unMute();
-        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
-        if(checkbox)checkbox.checked=false;
-    });
-    updateSoloButtons();
+function toggleSync(){const list=getGroup();if(!list.length)return;const playing=list.some(p=>p.state===YT.PlayerState.PLAYING);if(playing)list.forEach(p=>p.player.pauseVideo());else prepareAndStart();}
+function playAll(){players.filter(p=>p.ready).forEach(p=>p.player.playVideo());}
+function pauseAll(){players.filter(p=>p.ready).forEach(p=>p.player.pauseVideo());}
+function toggleDriftCorrection(){driftEnabled=!driftEnabled;updateUI();}
+function startDriftTimer(){if(driftTimer)clearInterval(driftTimer);driftTimer=setInterval(checkDrift,3000);}
+function checkDrift(){
+ if(!driftEnabled)return;const master=getMaster();if(!master||!master.ready||master.player.getPlayerState()!==YT.PlayerState.PLAYING)return;
+ const base=master.player.getCurrentTime();let corrected=0;
+ getGroup().forEach(p=>{if(p.id===master.id||p.player.getPlayerState()!==YT.PlayerState.PLAYING)return;const target=Math.max(0,base+(p.offset||0)),actual=p.player.getCurrentTime(),delta=actual-target;if(Math.abs(delta)>2.2){p.player.seekTo(target,true);corrected++;}});
+ if(corrected)document.getElementById("syncStatus").textContent="Corrected drift on "+corrected+" POV"+(corrected===1?"":"s");
 }
-
-/* SOLO TOGGLE FIX:
-   First click saves every POV's previous mute state.
-   Clicking the active SOLO again restores those states.
-   Switching to another SOLO keeps the original snapshot. */
-function soloAudio(id) {
-    const selected=findPlayer(id);
-    if(!selected || !selected.ready)return;
-
-    if(soloPlayerId===id) {
-        players.filter(p=>p.ready).forEach(p=>{
-            const wasMuted=soloPreviousMute.has(p.id) ? soloPreviousMute.get(p.id) : true;
-            if(wasMuted)p.player.mute();
-            else p.player.unMute();
-
-            const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
-            if(checkbox)checkbox.checked=wasMuted;
-        });
-        soloPlayerId=null;
-        soloPreviousMute.clear();
-        updateSoloButtons();
-        return;
-    }
-
-    if(soloPlayerId===null) {
-        soloPreviousMute.clear();
-        players.filter(p=>p.ready).forEach(p=>soloPreviousMute.set(p.id,p.player.isMuted()));
-    }
-
-    soloPlayerId=id;
-    players.filter(p=>p.ready).forEach(p=>{
-        const muted=p.id!==id;
-        if(muted)p.player.mute();
-        else p.player.unMute();
-
-        const checkbox=document.querySelector(`#tile-${p.id} .tile-footer label:nth-child(2) input`);
-        if(checkbox)checkbox.checked=muted;
-    });
-    updateSoloButtons();
+function setMasterVolume(value){masterVolume=Math.max(0,Math.min(100,Number(value)||0));document.getElementById("masterVolumeValue").textContent=masterVolume+"%";applyAudio();saveState();}
+function setBackgroundVolume(value){backgroundVolume=Math.max(0,Math.min(100,Number(value)||0));document.getElementById("backgroundVolumeValue").textContent=backgroundVolume+"%";applyAudio();saveState();}
+function setAudioMode(mode){audioMode=mode;applyAudio();updateAudioDescription();saveState();}
+function setManualMute(id,muted){const p=findPlayer(id);if(!p)return;p.manualMuted=!!muted;applyAudio();saveState();}
+function setPlayerVolume(id,value){const p=findPlayer(id);if(!p)return;p.volume=Math.max(0,Math.min(100,Number(value)||0));const out=document.getElementById("volume-value-"+id);if(out)out.textContent=p.volume+"%";applyAudio();saveState();}
+function toggleMasterMute(){masterMuted=!masterMuted;applyAudio();updateUI();saveState();}
+function applyAudio(){
+ players.filter(p=>p.ready).forEach(p=>{
+  const isFocus=p.id===focusId;let gain=1,muted=masterMuted||p.manualMuted;
+  if(audioMode==="discord"&&!isFocus)muted=true;
+  if(audioMode==="smart"&&!isFocus)gain=backgroundVolume/100;
+  const volume=Math.round(p.volume*(masterVolume/100)*gain);p.player.setVolume(volume);if(muted||volume===0)p.player.mute();else p.player.unMute();
+ });
+ document.querySelectorAll(".tile").forEach(tile=>{const id=Number(tile.id.replace("tile-","")),p=findPlayer(id),cb=document.getElementById("mute-"+id);if(p&&cb)cb.checked=p.manualMuted;});
 }
-
-function updateSoloButtons() {
-    players.forEach(p=>{
-        const button=document.getElementById("solo-"+p.id);
-        if(!button)return;
-        button.classList.toggle("active",soloPlayerId===p.id);
-        button.textContent=soloPlayerId===p.id ? "● SOLO ON" : "SOLO";
-    });
+function updateAudioDescription(){
+ const d=document.getElementById("audioDescription");
+ if(audioMode==="discord")d.textContent="Only the Focus POV is audible. Best when everyone shares one Discord voice channel.";
+ else if(audioMode==="proximity")d.textContent="All POVs play at their individual volume levels. Best for hearing separate proximity-chat conversations.";
+ else d.textContent="Focus POV stays at its chosen volume; other POVs are reduced to the Background Volume setting, so nearby conversations remain audible.";
 }
-
-function syncPositions() {
-    const list=players.filter(p=>p.ready && p.state!==YT.PlayerState.UNSTARTED);
-    if(list.length<2)return alert("You need at least two initialized videos.");
-    const reference=list[0].player.getCurrentTime();
-    list.forEach(p=>p.player.seekTo(reference,true));
-    statusText.textContent="Positions aligned to "+reference.toFixed(1)+" seconds";
+function toggleIndividual(id){const p=findPlayer(id);if(!p||!p.ready)return;if(p.player.getPlayerState()===YT.PlayerState.PLAYING)p.player.pauseVideo();else p.player.playVideo();}
+function fullscreenTile(id){document.getElementById("tile-"+id)?.requestFullscreen?.();}
+function toggleBrowserFullscreen(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();}
+function changeGrid(){const value=document.getElementById("gridSelect").value;if(value==="auto"){const n=players.length;grid.dataset.cols=n<=1?1:n<=4?2:n<=9?3:4;}else grid.dataset.cols=value;}
+function removePlayer(id){
+ const p=findPlayer(id);if(!p)return;if(p.player){try{p.player.destroy();}catch(e){}}
+ players=players.filter(x=>x.id!==p.id);if(masterId===p.id)masterId=players[0]?.id||null;if(focusId===p.id)focusId=masterId;
+ document.getElementById("tile-"+id)?.remove();updateUI();applyAudio();
 }
-
-function fullscreenTile(id) {
-    const tile=document.getElementById("tile-"+id);
-    if(tile && tile.requestFullscreen)tile.requestFullscreen();
-}
-function toggleBrowserFullscreen() {
-    if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
-    else document.exitFullscreen?.();
-}
-function renamePlayer(id,name) {
-    const item=findPlayer(id);
-    if(item && name.trim())item.name=name.trim();
-}
-function removePlayer(id) {
-    const item=findPlayer(id);
-    if(!item)return;
-    if(item.player){try{item.player.destroy();}catch(e){}}
-    players=players.filter(p=>p.id!==id);
-    soloPreviousMute.delete(id);
-    if(soloPlayerId===id) {
-        soloPlayerId=null;
-        soloPreviousMute.clear();
-    }
-    document.getElementById("tile-"+id)?.remove();
-    updateCount();
-    updateSoloButtons();
-}
-function clearAll() {
-    if(!confirm("Remove all videos?"))return;
-    [...players].forEach(p=>removePlayer(p.id));
-    soloPlayerId=null;
-    soloPreviousMute.clear();
-    updateSoloButtons();
-}
-function changeGrid() {
-    const value=document.getElementById("gridSelect").value;
-    if(value==="auto") {
-        const count=players.length;
-        grid.dataset.cols=count<=1?1:count<=4?2:count<=9?3:4;
-    } else grid.dataset.cols=value;
-}
-function updateCount() {
-    const count=players.length;
-    document.getElementById("videoCount").textContent=count+(count===1?" VIDEO":" VIDEOS");
-    const empty=document.getElementById("empty");
-    if(empty)empty.style.display=count?"none":"block";
-    changeGrid();
-}
-document.addEventListener("keydown",function(event) {
-    if(event.code!=="Space")return;
-    const target=event.target;
-    if(target.isContentEditable || ["INPUT","TEXTAREA","SELECT","BUTTON"].includes(target.tagName))return;
-    event.preventDefault();
-    toggleSync();
-});
-updateCount();
+function clearAll(){if(!players.length)return;if(!confirm("Remove all POVs?"))return;[...players].forEach(p=>{if(p.player){try{p.player.destroy();}catch(e){}}});players=[];masterId=null;focusId=null;grid.innerHTML='<div class="empty" id="empty">▦<br><strong>NO POVS YET</strong><br>Paste YouTube links above to build your multi-view.</div>';updateUI();saveState();}
+document.addEventListener("keydown",e=>{if(e.code!=="Space")return;const t=e.target;if(t.isContentEditable||["INPUT","TEXTAREA","SELECT","BUTTON"].includes(t.tagName))return;e.preventDefault();toggleSync();});
+loadSaved();updateUI();if(youtubeReady)players.forEach(createPlayer);
 </script>
 </body>
 </html>
